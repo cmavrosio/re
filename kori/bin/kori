@@ -1,0 +1,125 @@
+#!/usr/bin/env bash
+#
+# kori - Hierarchical project planner for re
+#
+# Like Lisa Simpson guiding Ralph, kori plans the work
+# and re executes it.
+#
+
+set -euo pipefail
+
+# Find kori installation
+if [[ -n "${KORI_HOME:-}" ]]; then
+    KORI_HOME="$KORI_HOME"
+elif [[ -d "$HOME/.local/share/kori" ]]; then
+    KORI_HOME="$HOME/.local/share/kori"
+elif [[ -d "$(dirname "$0")/.." ]]; then
+    KORI_HOME="$(cd "$(dirname "$0")/.." && pwd)"
+else
+    echo "error: Could not find kori installation" >&2
+    exit 1
+fi
+
+export KORI_HOME
+
+# Version
+VERSION="0.1.0"
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+BOLD='\033[1m'
+NC='\033[0m'
+
+usage() {
+    cat << 'EOF'
+kori - Hierarchical project planner for re
+
+USAGE:
+    kori <command> [options]
+
+COMMANDS:
+    init <goal>       Initialize a new project with a high-level goal
+    discover          Interactive Q&A to gather requirements
+    plan              Build task tree from requirements (autonomous)
+    setup             Generate setup instructions (secrets, env vars)
+    nag               Nag re to execute leaves (autonomous)
+    blame             Show total project status (what's done, in progress, pending)
+    status            Show tree with progress
+    next              Show next actionable leaf
+    tree              Display the full task tree
+    help              Show this help
+
+WORKFLOW:
+    1. kori init "Build a CRM system"     # Define goal
+    2. kori discover                       # Answer Claude's questions
+    3. kori plan                           # Claude builds task tree
+    4. kori nag                            # Nag re to execute
+
+OPTIONS:
+    -h, --help        Show this help
+    -v, --version     Show version
+
+EXAMPLES:
+    kori init "Build an e-commerce platform with Stripe"
+    kori discover
+    kori plan --max-depth 4
+    kori nag              # Start nagging re to work
+EOF
+}
+
+# Main dispatch
+case "${1:-}" in
+    init)
+        shift
+        exec bash "$KORI_HOME/commands/init.sh" "$@"
+        ;;
+    discover)
+        shift
+        exec bash "$KORI_HOME/commands/discover.sh" "$@"
+        ;;
+    plan)
+        shift
+        exec bash "$KORI_HOME/commands/plan.sh" "$@"
+        ;;
+    setup)
+        shift
+        exec bash "$KORI_HOME/commands/setup.sh" "$@"
+        ;;
+    nag)
+        shift
+        exec bash "$KORI_HOME/commands/nag.sh" "$@"
+        ;;
+    blame)
+        shift
+        exec bash "$KORI_HOME/commands/blame.sh" "$@"
+        ;;
+    status)
+        shift
+        exec bash "$KORI_HOME/commands/status.sh" "$@"
+        ;;
+    next)
+        shift
+        exec bash "$KORI_HOME/commands/next.sh" "$@"
+        ;;
+    tree)
+        shift
+        exec bash "$KORI_HOME/commands/tree.sh" "$@"
+        ;;
+    help|--help|-h)
+        usage
+        ;;
+    --version|-v)
+        echo "kori version $VERSION"
+        ;;
+    "")
+        usage
+        ;;
+    *)
+        echo -e "${RED}error:${NC} Unknown command: $1" >&2
+        echo "Run 'kori help' for usage" >&2
+        exit 1
+        ;;
+esac

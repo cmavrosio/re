@@ -1,0 +1,145 @@
+#!/usr/bin/env bash
+#
+# re - Ralph Enhanced
+# A human-readable AI task automation system
+#
+
+set -euo pipefail
+
+# Get the directory where re is installed
+RE_HOME="${RE_HOME:-$(dirname "$(dirname "$(readlink -f "$0")")")}"
+export RE_HOME
+
+# Source common utilities
+source "$RE_HOME/lib/orchestration/common.sh" 2>/dev/null || true
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+usage() {
+    cat << 'EOF'
+re - Ralph Enhanced
+
+A human-readable AI task automation system using Markdown, Bash, and Babashka.
+
+USAGE:
+    re <command> [options]
+
+COMMANDS:
+    init        Initialize a new .ralph/ directory in current project
+    start       Start a new task session from plan.md
+    status      Show current session status
+    watch       Live dashboard of progress
+    resume      Resume a paused session
+    pause       Pause after current iteration
+    abort       Abort current session
+    rollback    Rollback to a previous state
+    merge       Finalize session, sync to plan.md
+    config      View or modify configuration
+    inject      Inject an urgent message for next iteration
+    loop        Run the main iteration loop (internal)
+
+OPTIONS:
+    -h, --help      Show this help message
+    -v, --version   Show version
+    --verbose       Enable verbose output
+
+EXAMPLES:
+    re init                     # Initialize .ralph/ in current directory
+    re start                    # Start task from .ralph/plan.md
+    re status                   # Check current progress
+    re inject "focus on tests"  # Add urgent guidance
+    re abort                    # Stop the current session
+
+FILES:
+    .ralph/plan.md      Task definition (you write this)
+    .ralph/state.md     Session state (auto-managed)
+    .ralph/config.yaml  Configuration options
+
+For more information, see: https://github.com/your/re
+EOF
+}
+
+version() {
+    echo "re version 0.1.0"
+}
+
+log_error() {
+    echo -e "${RED}error:${NC} $1" >&2
+}
+
+log_info() {
+    echo -e "${BLUE}info:${NC} $1"
+}
+
+log_success() {
+    echo -e "${GREEN}success:${NC} $1"
+}
+
+log_warn() {
+    echo -e "${YELLOW}warn:${NC} $1"
+}
+
+# Check if babashka is installed
+check_dependencies() {
+    if ! command -v bb &> /dev/null; then
+        log_error "Babashka (bb) is not installed."
+        echo "Install with: brew install borkdude/brew/babashka"
+        exit 1
+    fi
+
+    if ! command -v git &> /dev/null; then
+        log_error "git is not installed."
+        exit 1
+    fi
+
+    if ! command -v claude &> /dev/null; then
+        log_error "claude CLI is not installed."
+        exit 1
+    fi
+}
+
+# Export utility functions for subcommands
+export -f log_error log_info log_success log_warn 2>/dev/null || true
+export RED GREEN YELLOW BLUE NC
+
+# Main command dispatch
+main() {
+    local cmd="${1:-}"
+
+    case "$cmd" in
+        -h|--help|"")
+            usage
+            exit 0
+            ;;
+        -v|--version|version)
+            version
+            exit 0
+            ;;
+        help)
+            exec bash "$RE_HOME/commands/help.sh"
+            ;;
+        init|plan|start|status|watch|resume|pause|abort|rollback|merge|config|inject|loop)
+            check_dependencies
+            local script="$RE_HOME/commands/${cmd}.sh"
+            if [[ -f "$script" ]]; then
+                shift
+                exec bash "$script" "$@"
+            else
+                log_error "Command script not found: $script"
+                exit 1
+            fi
+            ;;
+        *)
+            log_error "Unknown command: $cmd"
+            echo "Run 're --help' for usage information."
+            exit 1
+            ;;
+    esac
+}
+
+main "$@"

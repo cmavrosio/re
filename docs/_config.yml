@@ -1,0 +1,14 @@
+title: re & kori
+description: Autonomous AI task automation tools
+remote_theme: pages-themes/minimal@v0.2.0
+plugins:
+  - jekyll-remote-theme
+
+# Navigation
+nav:
+  - title: Home
+    url: /
+  - title: re
+    url: /re
+  - title: kori
+    url: /kori

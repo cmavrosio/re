@@ -1,0 +1,13 @@
+# OS files
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Editor directories
+.idea/
+.vscode/
+*.sublime-*
+
+# Test artifacts
+.ralph/

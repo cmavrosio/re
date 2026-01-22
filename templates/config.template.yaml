@@ -1,0 +1,42 @@
+# re configuration
+# Edit these values to customize behavior
+
+# Maximum iterations before auto-abort
+max_iterations: 50
+
+# Maximum tokens before auto-abort
+max_tokens: 500000
+
+# Auto-commit every N iterations (0 to disable)
+auto_commit_interval: 5
+
+# Test command to run after each iteration
+# Leave empty to skip tests
+test_command: ""
+
+# Claude model to use (sonnet, opus, haiku)
+model: sonnet
+
+# Enable verbose logging
+verbose: false
+
+# Require human approval for completion
+require_completion_approval: true
+
+# Session mode: stateless | hybrid
+# - stateless: Fresh Claude session each iteration (full control, more tokens)
+# - hybrid: Reuse session with periodic refresh (fewer tokens, still controllable)
+session_mode: hybrid
+
+# Hybrid mode: refresh every N iterations (1 = refresh every time = stateless-like)
+refresh_interval: 5
+
+# Hybrid mode: refresh when rules.md changes (steering file)
+refresh_on_rules: true
+
+# Hybrid mode: refresh after each CRITERION_DONE (more control, more tokens)
+refresh_on_criterion: false
+
+# Compress older iterations with haiku summaries (saves ~5k tokens/iteration)
+# Latest iteration stays full, older ones get summarized
+compress_iterations: true
