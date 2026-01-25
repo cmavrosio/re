@@ -36,14 +36,12 @@ map_model() {
             esac
             ;;
         codex)
-            # Codex uses: o1, gpt-4o, gpt-4o-mini, etc.
+            # Codex uses: gpt-5.2, gpt-4o-mini, etc.
             case "$model" in
                 fast) echo "gpt-4o-mini" ;;
-                smart) echo "o1" ;;
-                default|sonnet) echo "gpt-4o" ;;
-                opus) echo "o1" ;;
+                smart|default|sonnet|opus) echo "gpt-5.2" ;;
                 haiku) echo "gpt-4o-mini" ;;
-                *) echo "gpt-4o" ;;
+                *) echo "gpt-5.2" ;;
             esac
             ;;
         *)

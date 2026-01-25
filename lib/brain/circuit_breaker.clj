@@ -6,7 +6,7 @@
   {:max-consecutive-errors 3
    :max-consecutive-no-change 5
    :max-consecutive-test-only 3
-   :max-consecutive-test-failures 3
+   :max-consecutive-test-failures 5  ;; 5 attempts to fix tests before circuit break
    :error-reset-on-success true})
 
 (defn parse-yaml-simple

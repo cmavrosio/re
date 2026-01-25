@@ -20,10 +20,10 @@ auto_commit_interval: 5
 test_command: ""
 
 # Model to use
-# Generic: default, fast, smart (auto-mapped per provider)
-# Claude: sonnet, opus, haiku
-# Codex: gpt-4o, gpt-4o-mini, o1
-model: sonnet
+# Generic: smart (default), fast (auto-mapped per provider)
+# Claude: opus, sonnet, haiku
+# Codex: gpt-5.2, gpt-4o-mini
+model: smart
 
 # Enable verbose logging
 verbose: false

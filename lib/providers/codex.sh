@@ -15,7 +15,7 @@ source "$RE_HOME/lib/orchestration/common.sh" 2>/dev/null || {
 }
 
 # Default model
-DEFAULT_MODEL="gpt-4o"
+DEFAULT_MODEL="gpt-5.2"
 
 # Execute codex with context
 # Args: context_file output_file [model] [session_id] [continue]

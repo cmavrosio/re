@@ -270,6 +270,35 @@ run_iteration() {
         if ! bash "$RE_HOME/lib/orchestration/tests.sh" run "$test_command"; then
             tests_passed=false
             log_warn "Tests failed"
+
+            # Inject urgent message to focus Claude on fixing tests
+            local current_failures
+            current_failures=$(grep "consecutive_test_failures:" "$RALPH_DIR/health.yaml" 2>/dev/null | cut -d' ' -f2 || echo "0")
+            current_failures=$((current_failures + 1))
+            local remaining=$((5 - current_failures))
+
+            cat > "$RALPH_DIR/urgent.md" << URGENT_EOF
+## TESTS ARE FAILING - FIX BEFORE CONTINUING
+
+The test suite is failing. You MUST fix these test failures before continuing with other work.
+
+**Attempt $current_failures of 5** - $remaining attempts remaining before circuit break.
+
+Review the test output in the Test Results section below and fix the issues.
+Common fixes:
+- Type errors: Check function signatures and return types
+- Import errors: Verify all imports exist and are correct
+- Runtime errors: Check for null/undefined access
+
+Focus ONLY on fixing the failing tests. Do not continue with new features until tests pass.
+URGENT_EOF
+            log_warn "Injected urgent.md to focus on test fixes (attempt $current_failures/5)"
+        else
+            # Tests passed - remove test fix urgent message if it exists
+            if [[ -f "$RALPH_DIR/urgent.md" ]] && grep -q "TESTS ARE FAILING" "$RALPH_DIR/urgent.md" 2>/dev/null; then
+                rm -f "$RALPH_DIR/urgent.md"
+                log_info "Tests passing - removed test fix urgent message"
+            fi
         fi
     fi
 

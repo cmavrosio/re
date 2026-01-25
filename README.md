@@ -140,8 +140,9 @@ max_tokens: 500000
 auto_commit_interval: 5
 auto_push: true
 
-# Model: sonnet|opus|haiku (claude) or gpt-4o|o1|gpt-4o-mini (codex)
-model: opus
+# Model: smart (default) | fast
+# Claude: opus|sonnet|haiku, Codex: gpt-5.2|gpt-4o-mini
+model: smart
 
 # Test command with CI integration
 test_command: |
