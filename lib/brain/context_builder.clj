@@ -35,9 +35,9 @@
         summary-file (str (.getPath iter-file) ".summary")
         re-home (System/getenv "RE_HOME")]
     (try
-      ;; Call haiku to summarize via stdin
+      ;; Call provider to summarize via stdin (uses fast model)
       (let [proc (-> (ProcessBuilder.
-                       ["bash" (str re-home "/lib/orchestration/claude.sh")
+                       ["bash" (str re-home "/lib/providers/provider.sh")
                         "summarize-iteration"])
                      (.redirectErrorStream true)
                      .start)

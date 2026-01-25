@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Claude CLI wrapper for re
+# Claude Code CLI provider for re
 #
 
 set -euo pipefail
@@ -158,8 +158,10 @@ extract_response() {
 check_claude() {
     if ! command -v claude &> /dev/null; then
         log_error "claude CLI not found"
+        log_error "Install: https://docs.anthropic.com/en/docs/claude-code"
         return 1
     fi
+    log_info "claude CLI available"
     return 0
 }
 
@@ -196,6 +198,7 @@ case "${1:-}" in
         echo "  execute <context-file> <output-file> [model] [session_id] [continue]"
         echo "  prompt <prompt> [model]                       - Execute with prompt"
         echo "  analyze-diff <diff>                           - Analyze diff with haiku"
+        echo "  summarize-iteration <content>                 - Summarize with haiku"
         echo "  extract-tokens <json-file>                    - Extract token usage"
         echo "  extract-response <json-file>                  - Extract response text"
         echo "  extract-session-id <json-file>                - Extract session ID"

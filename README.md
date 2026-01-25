@@ -132,11 +132,16 @@ re runs Claude in an autonomous loop with safety controls:
 ### re (`.ralph/config.yaml`)
 
 ```yaml
+# AI provider: claude (default) or codex (OpenAI)
+provider: claude
+
 max_iterations: 100
 max_tokens: 500000
 auto_commit_interval: 5
 auto_push: true
-model: opus  # sonnet | opus | haiku
+
+# Model: sonnet|opus|haiku (claude) or gpt-4o|o1|gpt-4o-mini (codex)
+model: opus
 
 # Test command with CI integration
 test_command: |
@@ -236,14 +241,16 @@ Like Lisa Simpson guiding Ralph Wiggum, kori plans the work and re executes it.
 ## Requirements
 
 - [Babashka](https://babashka.org/) — `brew install borkdude/brew/babashka`
-- [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code) — `claude` command
 - git, jq
+- **One of:**
+  - [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code) — `claude` command (default)
+  - [OpenAI Codex CLI](https://developers.openai.com/codex/cli/) — `npm i -g @openai/codex`
 
 ---
 
 ## Safety Warning
 
-**re runs Claude with `--dangerously-skip-permissions`**, giving Claude full access to execute commands, read/write files, and make network requests.
+**re runs the AI CLI in autonomous mode** (`--dangerously-skip-permissions` for Claude, `--full-auto --sandbox danger-full-access` for Codex), giving it full access to execute commands, read/write files, and make network requests.
 
 **Recommendations:**
 - Only run in projects you trust

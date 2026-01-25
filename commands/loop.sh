@@ -198,7 +198,7 @@ run_iteration() {
         continue_flag="true"
     fi
 
-    if ! bash "$RE_HOME/lib/orchestration/claude.sh" execute "$context_file" "$response_file" "$model" "$SESSION_ID" "$continue_flag"; then
+    if ! bash "$RE_HOME/lib/providers/provider.sh" execute "$context_file" "$response_file" "$model" "$SESSION_ID" "$continue_flag"; then
         log_error "Claude execution failed"
         # Update health with error
         echo "success: false" | bb --classpath "$RE_HOME/lib" -m brain.circuit-breaker update "$RALPH_DIR"
@@ -207,7 +207,7 @@ run_iteration() {
 
     # Extract and save session ID for continuation
     local new_session_id
-    new_session_id=$(bash "$RE_HOME/lib/orchestration/claude.sh" extract-session-id "$response_file")
+    new_session_id=$(bash "$RE_HOME/lib/providers/provider.sh" extract-session-id "$response_file")
     if [[ -n "$new_session_id" ]]; then
         SESSION_ID="$new_session_id"
         echo "$SESSION_ID" > "$RALPH_DIR/.session_id"
@@ -215,10 +215,10 @@ run_iteration() {
 
     # 3. Extract response and tokens
     local response_text
-    response_text=$(bash "$RE_HOME/lib/orchestration/claude.sh" extract-response "$response_file")
+    response_text=$(bash "$RE_HOME/lib/providers/provider.sh" extract-response "$response_file")
 
     local tokens
-    tokens=$(bash "$RE_HOME/lib/orchestration/claude.sh" extract-tokens "$response_file")
+    tokens=$(bash "$RE_HOME/lib/providers/provider.sh" extract-tokens "$response_file")
     local input_tokens=$(echo "$tokens" | cut -d' ' -f1)
     local output_tokens=$(echo "$tokens" | cut -d' ' -f2)
 

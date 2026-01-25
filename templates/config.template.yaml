@@ -1,6 +1,11 @@
 # re configuration
 # Edit these values to customize behavior
 
+# AI provider: claude | codex
+# - claude: Anthropic Claude Code CLI (default)
+# - codex: OpenAI Codex CLI
+provider: claude
+
 # Maximum iterations before auto-abort
 max_iterations: 50
 
@@ -14,7 +19,10 @@ auto_commit_interval: 5
 # Leave empty to skip tests
 test_command: ""
 
-# Claude model to use (sonnet, opus, haiku)
+# Model to use
+# Generic: default, fast, smart (auto-mapped per provider)
+# Claude: sonnet, opus, haiku
+# Codex: gpt-4o, gpt-4o-mini, o1
 model: sonnet
 
 # Enable verbose logging
